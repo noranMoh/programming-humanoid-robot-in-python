@@ -107,15 +107,15 @@ class AngleInterpolationAgent(PIDAgent):
                     p1 = 0
                     p2 =0
                     p3 = keys[j][self.key[j]][0]
-                    print(names[j] + "::")
-                    print (p0)
-                    print (p1)
-                    print (p2)
-                    print (p3)
+                    #print(names[j] + "::")
+                    #print (p0)
+                    #print (p1)
+                    #print (p2)
+                    #print (p3)
                     b = (1-self.i[j])**3 * p0 + 3 * (1-self.i[j])**2 * self.i[j] * p1 + 3*(1-self.i[j]) * self.i[j]**2*p2 + self.i[j]**3 * p3
                     target_joints[names[j]] = b
 
-        print(target_joints)
+        #print(target_joints)
         return target_joints
 
 if __name__ == '__main__':

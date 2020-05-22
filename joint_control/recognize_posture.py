@@ -10,12 +10,13 @@
 '''
 from angle_interpolation import AngleInterpolationAgent
 from keyframes import hello
+from keyframes import leftBackToStand
 
 from os import listdir, path
 import pickle
 ROBOT_POSE_CLF = 'robot_pose.pkl'
 ROBOT_POSE_DATA_DIR = 'robot_pose_data'
-#classes = listdir(ROBOT_POSE_DATA_DIR)
+classes = listdir(ROBOT_POSE_DATA_DIR)
 
 
 class PostureRecognitionAgent(AngleInterpolationAgent):
@@ -33,15 +34,26 @@ class PostureRecognitionAgent(AngleInterpolationAgent):
         return super(PostureRecognitionAgent, self).think(perception)
 
     def recognize_posture(self, perception):
-        array = []
-        print (perception.joint)
-        for item in perception.joint.items():
-            array.append(item)
-       # posture = classes(self.posture_classifier.predict(array))
-        return 'Right'
-       # return posture
+        data = []
+        data_arr = []
+        data.append(perception.joint['LHipYawPitch'])
+        data.append(perception.joint['LHipRoll'])
+        data.append(perception.joint['LHipPitch'])
+        data.append(perception.joint['LKneePitch'])
+        data.append(perception.joint['RHipYawPitch'])
+        data.append(perception.joint['RHipRoll'])
+        data.append(perception.joint['RHipPitch'])
+        data.append(perception.joint['RKneePitch'])
+        data.append(perception.imu[0])
+        data.append(perception.imu[1])
+
+        data_arr.append(data)
+
+        posture = classes[self.posture_classifier.predict(data_arr)[0]]
+        print posture
+        return posture
 
 if __name__ == '__main__':
     agent = PostureRecognitionAgent()
-    agent.keyframes = hello  # CHANGE DIFFERENT KEYFRAMES
+    agent.keyframes = hello()  # CHANGE DIFFERENT KEYFRAMES
     agent.run()
