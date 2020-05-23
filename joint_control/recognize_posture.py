@@ -50,7 +50,7 @@ class PostureRecognitionAgent(AngleInterpolationAgent):
         data_arr.append(data)
 
         posture = classes[self.posture_classifier.predict(data_arr)[0]]
-        print posture
+        #print posture
         return posture
 
 if __name__ == '__main__':

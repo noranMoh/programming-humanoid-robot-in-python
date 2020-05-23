@@ -36,11 +36,13 @@ class AngleInterpolationAgent(PIDAgent):
                  sync_mode=True):
         super(AngleInterpolationAgent, self).__init__(simspark_ip, simspark_port, teamname, player_id, sync_mode)
         self.keyframes = ([], [], [])
-        self.key = [0] * 1000
-        self.i = [0]*1000
+
+        self.last_keyframes = ([], [], [])
+        self.key = [0] * 100
+        self.i = [0]*100
         self.time = 0
         self.lasttime = 0
-        self.init = [0] * 1000
+        self.init = [0] * 100
 
 
     def think(self, perception):
@@ -53,6 +55,12 @@ class AngleInterpolationAgent(PIDAgent):
         names = keyframes[0]
         times = keyframes[1]
         keys = keyframes[2]
+        if self.keyframes != self.last_keyframes:
+            self.lasttime = 0
+            self.i = [0] * 100
+            self.key = [0] * 100
+            self.init = [0] * 100
+            self.last_keyframes = self.keyframes
 
         if self.lasttime == 0:
             self.lasttime = perception.time
@@ -120,5 +128,5 @@ class AngleInterpolationAgent(PIDAgent):
 
 if __name__ == '__main__':
     agent = AngleInterpolationAgent()
-    agent.keyframes = hello()  # CHANGE DIFFERENT KEYFRAMES
+    agent.keyframes = leftBackToStand()  # CHANGE DIFFERENT KEYFRAMES
     agent.run()

@@ -5,9 +5,13 @@
 
 '''
 
-
 from recognize_posture import PostureRecognitionAgent
-
+from keyframes import hello
+from keyframes import leftBackToStand
+from keyframes import leftBellyToStand
+from keyframes import wipe_forehead
+from keyframes import rightBellyToStand
+from keyframes import rightBackToStand
 
 class StandingUpAgent(PostureRecognitionAgent):
     def think(self, perception):
@@ -16,12 +20,24 @@ class StandingUpAgent(PostureRecognitionAgent):
 
     def standing_up(self):
         posture = self.posture
-        # YOUR CODE HERE
+        if (posture == 'Belly'):
+            print ("bellybacktostand")
+            self.keyframes = leftBellyToStand()
+        elif (posture == 'Back' or posture == 'Left'):
+            self.keyframes = leftBackToStand()
+            print ("leftbacktostand")
+        elif (posture == 'Right'):
+            print ("righttbacktostand")
+            self.keyframes = leftBackToStand()
+        else:
+            self.keyframes = hello()
+
 
 
 class TestStandingUpAgent(StandingUpAgent):
     '''this agent turns off all motor to falls down in fixed cycles
     '''
+
     def __init__(self, simspark_ip='localhost',
                  simspark_port=3100,
                  teamname='DAInamite',
