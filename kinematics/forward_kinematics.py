@@ -27,10 +27,11 @@ sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '
 
 from numpy.matlib import matrix, identity
 
-from angle_interpolation import AngleInterpolationAgent
+#from angle_interpolation import AngleInterpolationAgent
 
+from recognize_posture import PostureRecognitionAgent
 
-class ForwardKinematicsAgent(AngleInterpolationAgent):
+class ForwardKinematicsAgent(PostureRecognitionAgent):
 
 
     def __init__(self, simspark_ip='localhost',

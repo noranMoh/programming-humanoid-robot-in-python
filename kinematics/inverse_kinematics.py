@@ -153,7 +153,7 @@ class InverseKinematicsAgent(ForwardKinematicsAgent):
         joint_angles = self.inverse_kinematics(effector_name, transform)
         self.keyframes = ([], [], [])  # the result joint angles have to fill in
         self.keyframes = self.set_keyframe(effector_name,joint_angles)
-    
+
 if __name__ == '__main__':
     agent = InverseKinematicsAgent()
     # test inverse kinematics
