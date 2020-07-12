@@ -14,6 +14,11 @@
 # add PYTHONPATH
 import os
 import sys
+import threading
+
+import numpy
+import cPickle
+
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'kinematics'))
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
@@ -26,6 +31,10 @@ class ServerAgent(InverseKinematicsAgent):
     '''ServerAgent provides RPC service
     '''
     # YOUR CODE HERE
+    def thread_function(self):
+        self.server.serve_forever()
+        return
+
     def __init__(self, simspark_ip='localhost',
                  simspark_port=3100,
                  teamname='DAInamite',
@@ -44,13 +53,14 @@ class ServerAgent(InverseKinematicsAgent):
         self.server.register_function(self.set_transform, "set_transform")
 
         #self.target_joints["LKneePitch"] = 0.5
-        self.server.serve_forever()
+        x = threading.Thread(target= self.thread_function, args=())
+        x.daemon = True
+        x.start()
 
 
 
     def get_angle(self, joint_name):
         '''get sensor value of given joint'''
-        print joint_name
         return self.target_joints[joint_name]
 
 
@@ -61,18 +71,11 @@ class ServerAgent(InverseKinematicsAgent):
         self.target_joints[joint_name] = angle
         return 0
 
-   # server.register_function(set_angle, "set_angle")
 
     def get_posture(self):
         '''return current posture of robot'''
-        print "kjk"
-        perception = self.sense() #todo : fi moshkla henaa
-        print "dc"
-        print perception
-        return self.recognize_posture(perception)
+        return self.posture
 
-
-    #server.register_function(get_posture, "get_posture")
 
     def execute_keyframes(self, keyframes):
         '''excute keyframes, note this function is blocking call,
@@ -80,19 +83,22 @@ class ServerAgent(InverseKinematicsAgent):
         '''
         self.keyframes = keyframes
 
-        #todo: wait till keyframe ends
-
+        while self.keyframes == keyframes:
+           pass
         return 0
 
     def get_transform(self, name):
         '''get transform with given name
         '''
-        # YOUR CODE HERE
+        T = self.transforms[name]
+        transform = cPickle.dumps(T)
+        return transform
 
     def set_transform(self, effector_name, transform):
         '''solve the inverse kinematics and control joints use the results
         '''
-        super(ServerAgent, self).set_transform(effector_name, transform)
+        T = cPickle.loads(transform)
+        self.set_transforms(effector_name, T)
         return 0
 
 

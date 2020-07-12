@@ -9,6 +9,19 @@
 import weakref
 import xmlrpclib
 
+import numpy
+import math
+from numpy.matlib import matrix, identity
+
+from keyframes import hello
+from keyframes import leftBackToStand
+from keyframes import leftBellyToStand
+from keyframes import wipe_forehead
+from keyframes import rightBellyToStand
+from keyframes import rightBackToStand
+
+import cPickle
+
 
 class PostHandler(object):
     '''the post hander wraps function to be excuted in paralle
@@ -35,7 +48,6 @@ class ClientAgent(object):
     
     def get_angle(self, joint_name):
         '''get sensor value of given joint'''
-        print "wahfa"
         angle = self.proxy.get_angle(joint_name)
         print angle
     
@@ -49,6 +61,7 @@ class ClientAgent(object):
         '''return current posture of robot'''
         posture = self.proxy.get_posture()
         print posture
+        return posture
 
     def execute_keyframes(self, keyframes):
         '''excute keyframes, note this function is blocking call,
@@ -60,20 +73,29 @@ class ClientAgent(object):
         '''get transform with given name
         '''
         transform = self.proxy.get_transform(name)
-        print transform
+        T = cPickle.loads(transform)
+        print T
+        return T
 
     def set_transform(self, effector_name, transform):
         '''solve the inverse kinematics and control joints use the results
         '''
-        self.proxy.set_transform(effector_name, transform)
+        s = cPickle.dumps(transform)
+        self.proxy.set_transform(effector_name, s)
 
 
 if __name__ == '__main__':
     agent = ClientAgent()
 
+    agent.get_posture()
     agent.set_angle("LKneePitch",0.5)
     agent.get_angle("LKneePitch")
-    agent.get_posture()
+    T = identity(4)
+    T[1, -1] = 0.05
+    T[2, -1] = 0.26
+    agent.get_transform('RKneePitch')
+    agent.execute_keyframes(wipe_forehead(1))
+
     # TEST CODE HERE
 
 

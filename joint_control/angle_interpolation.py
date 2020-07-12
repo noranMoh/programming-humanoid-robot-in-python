@@ -112,8 +112,9 @@ class AngleInterpolationAgent(PIDAgent):
                     b = (1-self.i[j])**3 * p0 + 3 * (1-self.i[j])**2 * self.i[j] * p1 + 3*(1-self.i[j]) * self.i[j]**2*p2 + self.i[j]**3 * p3
                     target_joints[names[j]] = b
 
-#todo : delete if
+
         if(len(target_joints) == 0):
+            self.keyframes = ([], [], [])
             self.start = 1
 
         return target_joints
